@@ -2,6 +2,8 @@ package assignment7;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.*;
 import java.util.concurrent.ArrayBlockingQueue;
 
@@ -11,33 +13,43 @@ public class cheaters {
 
 
     public static void main(String[] args) {
-
+        makeFiles();
     }
 
     public static Map makeFiles() {
-        Collection<Scanner> all = new ArrayList<Scanner>();
+//        Collection<Scanner> all = new ArrayList<Scanner>();
         Map<String, StringBuilder> files = new LinkedHashMap<>();
-        File dir = new File("C:/Users/hvu/Desktop/Project7/sm_doc_set");
-        StringBuilder temp = new StringBuilder();
+        File dir = new File("C:\\Users\\hvu\\Desktop\\Project7\\sm_doc_set");
+        String temp = "";
+
+        File[] listFiles = dir.listFiles();
 
         for (File file : dir.listFiles()) {
+            StringBuilder result = new StringBuilder();
             if(file.isFile()) {
                 try {
-                    Scanner s = new Scanner(file);
-                    all.add(s);
-//                    s.close();
-
-                    while(s.hasNext()){
-                        temp.append(s.next().toLowerCase());
-                    }
-
-                    
-                } catch (FileNotFoundException e) {
+                    temp = new String(Files.readAllBytes(Paths.get(file.toString())));
+                    temp = temp.toLowerCase();
+                } catch (Exception e) {
                     //DO SOMETHING?
                 }
+
+                for(int i = 0; i < temp.length(); i++){
+                    if(temp.charAt(i) >= 'a' && temp.charAt(i) <= 'z'){
+                        result.append(temp.charAt(i));
+                    }
+                }
+
+                files.put(file.getName(), result);
+                temp = "";
             }
         }
 
+        if(files.isEmpty()){
+            return null;
+        }
+
+        return files;
 
     }
 }
