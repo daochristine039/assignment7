@@ -14,7 +14,7 @@ public class cheaters {
 
     public static void main(String[] args) {
         Map<String, StringBuilder> files = makeFiles();
-        System.out.println(files);
+
 
     }
 
@@ -52,5 +52,35 @@ public class cheaters {
 
         return files;
 
+    }
+
+    public static Map<Integer, StringBuilder[]> compareFiles(Map<Integer, StringBuilder[]> comparisons, Map<String, StringBuilder> files){
+        Iterator iterator = files.keySet().iterator();
+        String key = "";
+
+        while(iterator.hasNext()){
+            StringBuilder newValue = new StringBuilder();
+            key = (String) iterator.next();
+            StringBuilder currentValue = files.get(key);
+            int count = 0;  //Keeps track of which word to start with
+
+            for(int i = 0, j = 0; i < currentValue.length(); i++){  //6-word sequence without
+                if(j == 6){
+                    count++;
+                    break;
+                }
+
+                
+                if(currentValue.charAt(i) >= 'a' && currentValue.charAt(i) <= 'z'){
+                    newValue.append(currentValue.charAt(i));
+                } else if(currentValue.charAt(i) == ' '){
+                    j++;
+                }
+            }
+
+
+        }
+
+        return comparisons;
     }
 }
