@@ -9,23 +9,25 @@ import java.util.concurrent.ArrayBlockingQueue;
 
 public class cheaters {
     //private Map<String, Scanner> files = new LinkedHashMap<>();
-    private Map<String, Integer> comparisons = new LinkedHashMap<>();
+    private Map<Integer, String[]> comparisons = new LinkedHashMap<>();
 
 
     public static void main(String[] args) {
-        Map<String, StringBuilder> files = makeFiles();
+        Map<String, String[]> files = makeFiles();
+        compareFiles(files);
 
 
     }
 
-    public static Map<String, StringBuilder> makeFiles() {
-        Map<String, StringBuilder> files = new LinkedHashMap<>();
+    public static Map<String, String[]> makeFiles() {
+        Map<String, String[]> files = new LinkedHashMap<>();
         File dir = new File("C:\\Users\\hvu\\Desktop\\Project7\\sm_doc_set");
-        String temp = "";
+
 
         //File[] listFiles = dir.listFiles();
 
         for (File file : dir.listFiles()) {
+            String temp = "";
             StringBuilder result = new StringBuilder();
             if(file.isFile()) {
                 try {
@@ -36,13 +38,15 @@ public class cheaters {
                 }
 
                 for(int i = 0; i < temp.length(); i++){
-                    if((temp.charAt(i) >= 'a' && temp.charAt(i) <= 'z') || temp.charAt(i) == ' '){
+                    if(((temp.charAt(i) >= 'a' && temp.charAt(i) <= 'z') || temp.charAt(i) == ' ') || (temp.charAt(i) >= '0' && temp.charAt(i) <= '9')){
                         result.append(temp.charAt(i));
                     }
                 }
 
-                files.put(file.getName(), result);
                 temp = "";
+                temp = temp + result;
+                String[] wordsArray = temp.split(" ");
+                files.put(file.getName(), wordsArray);
             }
         }
 
@@ -54,33 +58,20 @@ public class cheaters {
 
     }
 
-    public static Map<Integer, StringBuilder[]> compareFiles(Map<Integer, StringBuilder[]> comparisons, Map<String, StringBuilder> files){
+    public static void compareFiles(Map<String, String[]> files){
         Iterator iterator = files.keySet().iterator();
         String key = "";
 
         while(iterator.hasNext()){
-            StringBuilder newValue = new StringBuilder();
+            String newValue = "";
             key = (String) iterator.next();
-            StringBuilder currentValue = files.get(key);
+            String[] currentValue = files.get(key);
             int count = 0;  //Keeps track of which word to start with
 
-            for(int i = 0, j = 0; i < currentValue.length(); i++){  //6-word sequence without
-                if(j == 6){
-                    count++;
-                    break;
-                }
-
-                
-                if(currentValue.charAt(i) >= 'a' && currentValue.charAt(i) <= 'z'){
-                    newValue.append(currentValue.charAt(i));
-                } else if(currentValue.charAt(i) == ' '){
-                    j++;
-                }
+            for(int i = 0, j = count; ; i++, j++){
+                newValue += currentValue[j];
             }
 
 
         }
-
-        return comparisons;
     }
-}
