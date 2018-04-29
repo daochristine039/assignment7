@@ -26,7 +26,7 @@ public class cheaters {
 
     public static void makeFiles() {
         Map<String, String[]> files = new LinkedHashMap<>();
-        File dir = new File("C:\\Users\\hvu\\Desktop\\Project7\\big_doc_set");
+        File dir = new File("C:\\Users\\hvu\\Desktop\\Project7\\sm_doc_set");
 
 
         //File[] listFiles = dir.listFiles();
@@ -44,11 +44,19 @@ public class cheaters {
                     e.printStackTrace();
                 }
 
+                char previous = ' ';
                 for(int i = 0; i < temp.length(); i++){
-                    if(((temp.charAt(i) >= 'a' && temp.charAt(i) <= 'z') || temp.charAt(i) == ' ') || (temp.charAt(i) >= '0' && temp.charAt(i) <= '9')){
-                        result.append(temp.charAt(i));
+                    if((temp.charAt(i) >= 'a' && temp.charAt(i) <= 'z') || temp.charAt(i) == ' ' || temp.charAt(i) == '\n' || temp.charAt(i) == '\t' || temp.charAt(i) == '\r' || temp.charAt(i) >= '0' && temp.charAt(i) <= '9'){
+                        if((previous == '\n' || previous == '\t' || previous == '\r' || previous == ' ') && (temp.charAt(i) == '\n' || temp.charAt(i) == '\t' || temp.charAt(i) == '\r' || temp.charAt(i) == ' ')){
+                            continue;
+                        }
+                        if(temp.charAt(i) == '\n' || temp.charAt(i) == '\t' || temp.charAt(i) == '\r' || temp.charAt(i) == ' '){
+                            result.append('\n');
+                        } else {
+                            result.append(temp.charAt(i));
+                        }
                     }
-
+                    previous = temp.charAt(i);
 //                    if((temp.charAt(i) >= 'a' && temp.charAt(i) <= 'z') || (temp.charAt(i) >= '0' && temp.charAt(i) <= '9')){
 //                        result1.append(temp.charAt(i));
 //                    }
@@ -57,7 +65,7 @@ public class cheaters {
                 temp = "";
                 temp = temp + result;
 //                temp1 = temp1 + result1;
-                String[] wordsArray = temp.split(" ");
+                String[] wordsArray = temp.split("\n");
                 files.put(file.getName(), wordsArray);
 //                toCompare.put(file.getName(), temp1);
             }
@@ -109,6 +117,7 @@ public class cheaters {
             Iterator cmpIterator = sequences.keySet().iterator();
 
             while(cmpIterator.hasNext()){
+                numOfRep = 0;
                 key1 = (String) cmpIterator.next();
                 if(key1.equals(key)){
                     continue;
@@ -123,7 +132,8 @@ public class cheaters {
 
                 if(numOfRep > 200){
                     String[] temp1 = {key, key1};
-                    if(!comparisons.containsKey(temp1)){
+                    String[] check = {key1, key};
+                    if(!comparisons.containsKey(check)){
                         comparisons.put(temp1, numOfRep);
                     }
                 }
