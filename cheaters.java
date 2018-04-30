@@ -12,21 +12,34 @@ public class cheaters {
     private static Map<String, ArrayList<String>> sequences = new LinkedHashMap<>();
     //private static Map<String, String> toCompare = new LinkedHashMap<>();
     private static Map<String[], Integer> comparisons = new LinkedHashMap<>();
+    public static int wordSequenceLength ;   //number words looking for common
+    public static int minNumSameSequence;   //number of sequences in common we are looking for
+    public static String filePath;
 
 
     public static void main(String[] args) {
-        long startTime = System.nanoTime();
+        //long startTime = System.nanoTime();
         makeFiles();
         compareFiles();
         printComparisons();
-        long endTime = System.nanoTime();
-        System.out.println("Took "+(endTime - startTime) + " ns");
+        //long endTime = System.nanoTime();
+        //System.out.println("Took "+(endTime - startTime) + " ns");
 
+    }
+
+    public static void parseArgs(String[] args) {
+        if(args.length != 3) {
+            System.err.println("incorrect arguments");
+        } else {
+            filePath = args[0];
+            wordSequenceLength = Integer.parseInt(args[1]);
+            minNumSameSequence = Integer.parseInt(args[2]);
+        }
     }
 
     public static void makeFiles() {
         Map<String, String[]> files = new LinkedHashMap<>();
-        File dir = new File("C:\\Users\\hvu\\Desktop\\Project7\\sm_doc_set");
+        File dir = new File("C:\\Users\\hvu\\Desktop\\Project7\\med_doc_set");
 
 
         //File[] listFiles = dir.listFiles();
@@ -46,28 +59,22 @@ public class cheaters {
 
                 char previous = ' ';
                 for(int i = 0; i < temp.length(); i++){
-                    if((temp.charAt(i) >= 'a' && temp.charAt(i) <= 'z') || temp.charAt(i) == ' ' || temp.charAt(i) == '\n' || temp.charAt(i) == '\t' || temp.charAt(i) == '\r' || temp.charAt(i) >= '0' && temp.charAt(i) <= '9'){
+                    if((temp.charAt(i) >= 'a' && temp.charAt(i) <= 'z') || temp.charAt(i) == ' ' || temp.charAt(i) == '\n' || temp.charAt(i) == '\t' || temp.charAt(i) == '\r' || (temp.charAt(i) >= '0' && temp.charAt(i) <= '9')){
                         if((previous == '\n' || previous == '\t' || previous == '\r' || previous == ' ') && (temp.charAt(i) == '\n' || temp.charAt(i) == '\t' || temp.charAt(i) == '\r' || temp.charAt(i) == ' ')){
                             continue;
-                        }
-                        if(temp.charAt(i) == '\n' || temp.charAt(i) == '\t' || temp.charAt(i) == '\r' || temp.charAt(i) == ' '){
+                        } else if(temp.charAt(i) == '\n' || temp.charAt(i) == '\t' || temp.charAt(i) == '\r' || temp.charAt(i) == ' '){
                             result.append('\n');
                         } else {
                             result.append(temp.charAt(i));
                         }
                     }
                     previous = temp.charAt(i);
-//                    if((temp.charAt(i) >= 'a' && temp.charAt(i) <= 'z') || (temp.charAt(i) >= '0' && temp.charAt(i) <= '9')){
-//                        result1.append(temp.charAt(i));
-//                    }
                 }
 
                 temp = "";
                 temp = temp + result;
-//                temp1 = temp1 + result1;
                 String[] wordsArray = temp.split("\n");
                 files.put(file.getName(), wordsArray);
-//                toCompare.put(file.getName(), temp1);
             }
         }
 
@@ -87,7 +94,7 @@ public class cheaters {
 
             loop1: for(; ; count++) {
                 temp = "";
-                for (int i = 0, j = count; i < 6; i++, j++) {   //i = checks for 6-word-sequence
+                for (int i = 0, j = count; i < wordSequenceLength; i++, j++) {   //i = checks for 6-word-sequence
                     if (j == currentValue.length) {
                         break loop1;
                     }
@@ -130,10 +137,21 @@ public class cheaters {
                     }
                 }
 
-                if(numOfRep > 200){
+                ArrayList keyList = new ArrayList<>(comparisons.keySet());
+                if(numOfRep > minNumSameSequence){
                     String[] temp1 = {key, key1};
                     String[] check = {key1, key};
-                    if(!comparisons.containsKey(check)){
+                    Boolean contained = false;
+
+                    for(int k = 0; k < keyList.size(); k++){
+                        String[] stringArr = (String[]) keyList.get(k);
+                        if(Arrays.equals(check, stringArr)){
+                            contained = true;
+                            break;
+                        }
+                    }
+
+                    if(!contained) {
                         comparisons.put(temp1, numOfRep);
                     }
                 }
